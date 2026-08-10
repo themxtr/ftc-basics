@@ -1,260 +1,40 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FTC Blocks Programming — Module 1: Introduction</title>
+<title>FTC Blocks Programming â€” Module 1: Introduction</title>
 
 <!--
   ================================================================
-  IMAGES NEEDED — drop files in an "images" folder next to this
+  IMAGES NEEDED â€” drop files in an "images" folder next to this
   html (or point each src="" straight at your own file/path).
   Until a real image loads, each slot shows a labeled placeholder.
   ================================================================
-   1. images/hero-team.jpg              Title slide hero (team / robot)
-   2. images/control-hub-closeup.jpg    Control Hub, close-up
-   3. images/control-hub-mounted.jpg    Control Hub mounted on a robot
-   4. images/expansion-hub-phone.jpg    Expansion Hub + phone combo
-   5. images/driver-hub.jpg             REV Driver Hub, in use
-   6. images/driver-hub-closeup.jpg     Driver Hub, close-up
-   7. images/phone-with-gamepads.jpg    Phone + OTG adapter + gamepads
-   8. images/gamepad-f310.jpg           Logitech F310 gamepad
-   9. images/driver-station-app.jpg     Driver Station app, op-mode screen
-  10. images/labeled-devices.jpg        Devices labeled with tape
+   1. assets/images/hero-team.jpg              Title slide hero (team / robot)
+   2. assets/images/control-hub-closeup.jpg    Control Hub, close-up
+   3. assets/images/control-hub-mounted.jpg    Control Hub mounted on a robot
+   4. assets/images/expansion-hub-phone.jpg    Expansion Hub + phone combo
+   5. assets/images/driver-hub.jpg             REV Driver Hub, in use
+   6. assets/images/driver-hub-closeup.jpg     Driver Hub, close-up
+   7. assets/images/phone-with-gamepads.jpg    Phone + OTG adapter + gamepads
+   8. assets/images/gamepad-f310.jpg           Logitech F310 gamepad
+   9. assets/images/driver-station-app.jpg     Driver Station app, op-mode screen
+  10. assets/images/labeled-devices.jpg        Devices labeled with tape
   ================================================================
 -->
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-
-<style>
-  :root{
-    --paper:#EDF0EA;
-    --paper-card:#FAFAF6;
-    --ink:#1C2420;
-    --ink-soft:#5B655D;
-    --line:#CBD3C9;
-    --amber:#E8A33D;
-    --amber-dark:#C67F1C;
-    --amber-soft:#FBEAC8;
-    --blue:#2C5F86;
-    --blue-soft:#DEE9EF;
-    --green:#3E8A5B;
-    --green-soft:#E3F2E7;
-    --red:#C1503D;
-    --red-soft:#FBEAE5;
-    --font-display:'Space Grotesk', 'Arial Narrow', sans-serif;
-    --font-body:'IBM Plex Sans', Arial, sans-serif;
-    --font-mono:'IBM Plex Mono', 'Courier New', monospace;
-  }
-
-  *{ box-sizing:border-box; }
-  html,body{ height:100%; margin:0; }
-  body{
-    background:
-      repeating-linear-gradient(0deg, rgba(28,36,32,0.035) 0 1px, transparent 1px 28px),
-      repeating-linear-gradient(90deg, rgba(28,36,32,0.035) 0 1px, transparent 1px 28px),
-      var(--paper);
-    color:var(--ink);
-    font-family:var(--font-body);
-    -webkit-font-smoothing:antialiased;
-  }
-  @media (prefers-reduced-motion: reduce){
-    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
-  }
-
-  h1,h2,h3{ font-family:var(--font-display); margin:0; }
-  p{ margin:0 0 12px; line-height:1.55; }
-  ul{ margin:0; padding-left:1.15em; }
-  li{ margin-bottom:8px; line-height:1.5; }
-  a{ color:var(--blue); }
-  button{ font-family:inherit; }
-  button:focus-visible, .checklist-item:focus-visible, .flashcard:focus-visible, .dot:focus-visible{
-    outline:2px solid var(--blue); outline-offset:2px;
-  }
-
-  /* ---------- deck shell ---------- */
-  .deck{ display:flex; flex-direction:column; height:100vh; max-width:1240px; margin:0 auto; }
-
-  .deck-top{ display:flex; align-items:center; gap:18px; padding:18px 28px 10px; }
-  .brand{
-    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.09em;
-    color:var(--ink-soft); white-space:nowrap; cursor:pointer; background:none; border:none; padding:0;
-  }
-  .brand:hover{ color:var(--blue); }
-  .progress-track{ flex:1; height:4px; background:var(--line); border-radius:2px; overflow:hidden; }
-  .progress-fill{ height:100%; width:5%; background:linear-gradient(90deg,var(--amber),var(--blue)); transition:width .3s ease; }
-  .counter{ font-family:var(--font-mono); font-size:11.5px; color:var(--ink-soft); white-space:nowrap; }
-
-  main.stage{ position:relative; flex:1; overflow:hidden; padding:0 28px; }
-  .slide{
-    position:absolute; inset:0; overflow-y:auto;
-    padding:14px 4px 30px;
-    opacity:0; pointer-events:none; transform:translateY(10px);
-    transition:opacity .35s ease, transform .35s ease;
-  }
-  .slide.active{ opacity:1; pointer-events:auto; transform:translateY(0); }
-  .slide-inner{ max-width:1080px; margin:0 auto; padding-bottom:10px; }
-
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:9px;
-    font-family:var(--font-mono); font-size:12px; letter-spacing:.09em; color:var(--blue);
-    margin-bottom:8px; text-transform:uppercase;
-  }
-  .eyebrow::before{ content:''; width:22px; height:1px; background:var(--blue); }
-
-  .slide-title{ font-weight:700; font-size:clamp(23px,3vw,38px); line-height:1.08; margin-bottom:14px; }
-  .lead{ font-size:16px; color:var(--ink-soft); max-width:740px; margin-bottom:16px; }
-
-  .tag{
-    display:inline-block; font-family:var(--font-mono); font-size:11px; letter-spacing:.06em;
-    text-transform:uppercase; background:var(--blue-soft); color:var(--blue);
-    padding:4px 11px; border-radius:999px; margin-bottom:10px;
-  }
-
-  footer.deck-bottom{ display:flex; align-items:center; justify-content:space-between; gap:18px; padding:12px 28px 22px; }
-  .nav-btn{
-    font-family:var(--font-mono); font-size:12.5px; letter-spacing:.03em;
-    background:var(--ink); color:var(--paper); border:none; padding:10px 18px;
-    border-radius:8px; cursor:pointer;
-  }
-  .nav-btn:disabled{ opacity:.32; cursor:default; }
-  .nav-btn:not(:disabled):hover{ background:var(--blue); }
-  .dots{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; max-width:56%; }
-  .dot{ width:7px; height:7px; border-radius:50%; background:var(--line); border:none; cursor:pointer; padding:0; }
-  .dot.active{ background:var(--amber-dark); width:20px; border-radius:4px; }
-  .hint{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-soft); text-align:center; padding-bottom:6px; }
-
-  /* ---------- generic content blocks ---------- */
-  .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
-  .grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-  .split{ display:grid; grid-template-columns:1.25fr .95fr; gap:30px; align-items:start; }
-  @media (max-width:760px){ .grid-2,.grid-3,.split{ grid-template-columns:1fr; } }
-
-  .card{ background:var(--paper-card); border:1px solid var(--line); border-radius:12px; padding:20px 22px; }
-  .card h3{ font-size:17px; margin-bottom:8px; }
-  .card p:last-child{ margin-bottom:0; }
-
-  .callout{
-    background:var(--amber-soft); border-left:4px solid var(--amber-dark);
-    padding:14px 18px; border-radius:6px; font-size:14.5px; margin-top:16px;
-  }
-  .callout strong{ display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:.06em;
-    text-transform:uppercase; color:var(--amber-dark); margin-bottom:5px; }
-  .note{
-    background:var(--blue-soft); border-left:4px solid var(--blue);
-    padding:14px 18px; border-radius:6px; font-size:14.5px; margin-top:16px;
-  }
-
-  .meta-row{ display:flex; gap:12px; flex-wrap:wrap; margin:16px 0 20px; }
-  .meta-chip{
-    font-family:var(--font-mono); font-size:12px; color:var(--ink-soft);
-    background:var(--paper-card); border:1px solid var(--line); border-radius:8px; padding:7px 13px;
-  }
-
-  table.tbl{ width:100%; border-collapse:collapse; margin-top:6px; }
-  .tbl th,.tbl td{ text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); font-size:14.5px; vertical-align:top; }
-  .tbl th{ font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase;
-    color:var(--ink-soft); border-bottom:2px solid var(--ink); }
-  .tbl tr:last-child td{ border-bottom:none; }
-
-  /* ---------- figures / image placeholders ---------- */
-  .fig-wrap{ display:flex; flex-direction:column; gap:8px; }
-  .fig{ position:relative; border:1px solid var(--line); border-radius:10px; overflow:hidden;
-    aspect-ratio:4/3; background:var(--paper-card); }
-  .fig-img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .fig--empty .fig-img{ display:none; }
-  .fig-placeholder{ display:none; position:absolute; inset:0; flex-direction:column; align-items:center;
-    justify-content:center; gap:9px; text-align:center; padding:16px;
-    background:
-      repeating-linear-gradient(45deg, rgba(28,36,32,0.05) 0 2px, transparent 2px 10px);
-  }
-  .fig--empty .fig-placeholder{ display:flex; }
-  .fig-icon{ width:36px; height:36px; border:2px dashed var(--ink-soft); border-radius:7px;
-    display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--ink-soft); }
-  .fig-label{ font-family:var(--font-mono); font-size:11px; color:var(--ink-soft); line-height:1.5; }
-  .fig-label code{ display:inline-block; margin-top:3px; background:rgba(28,36,32,0.07); padding:2px 6px; border-radius:4px; }
-  figcaption{ font-family:var(--font-mono); font-size:11.5px; color:var(--ink-soft); }
-
-  /* ---------- checklists ---------- */
-  .checklist-block{ margin-top:14px; }
-  .check-count{ font-family:var(--font-mono); font-size:12px; color:var(--ink-soft); display:block; margin-bottom:10px; }
-  .checklist{ display:flex; flex-direction:column; gap:9px; }
-  .checklist-item{
-    display:flex; gap:13px; align-items:flex-start; padding:13px 16px;
-    border:1px solid var(--line); border-radius:10px; background:var(--paper-card);
-    cursor:pointer; transition:background .15s, border-color .15s; user-select:none;
-  }
-  .checklist-item .box{
-    flex:0 0 21px; width:21px; height:21px; margin-top:1px; border:2px solid var(--ink-soft); border-radius:5px;
-    display:flex; align-items:center; justify-content:center; font-size:13px; color:transparent; transition:.15s;
-  }
-  .checklist-item.checked{ background:var(--green-soft); border-color:var(--green); }
-  .checklist-item.checked .box{ background:var(--green); border-color:var(--green); color:#fff; }
-  .checklist-item span.txt{ font-size:14.5px; line-height:1.45; }
-
-  /* ---------- schematic (svg) ---------- */
-  .schematic-wrap{ border:1px solid var(--line); border-radius:12px; background:var(--paper-card); padding:14px; margin-top:10px; }
-  .sw-box{ fill:var(--paper-card); stroke:var(--ink); stroke-width:2; }
-  .sw-box-alt{ fill:#fff; stroke:var(--blue); stroke-width:2; }
-  .sw-wireless{ fill:none; stroke:var(--blue); stroke-width:2; stroke-dasharray:6 6; }
-  .sw-wired{ fill:none; stroke:var(--ink); stroke-width:2; }
-  .sw-label{ font-family:var(--font-mono); font-size:13px; font-weight:600; fill:var(--ink); }
-  .sw-sublabel{ font-family:var(--font-mono); font-size:10px; fill:var(--ink-soft); }
-  .sw-wlabel{ font-family:var(--font-mono); font-size:10.5px; fill:var(--blue); }
-  .sw-arrow{ fill:var(--blue); }
-  .legend-row{ display:flex; gap:22px; flex-wrap:wrap; margin-top:12px; font-family:var(--font-mono); font-size:11.5px; color:var(--ink-soft); }
-  .legend-swatch{ display:inline-block; width:22px; border-top:2px solid var(--ink); vertical-align:middle; margin-right:6px; }
-  .legend-swatch.dash{ border-top:2px dashed var(--blue); }
-
-  /* ---------- flashcards ---------- */
-  .flash-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:14px; }
-  @media (max-width:820px){ .flash-grid{ grid-template-columns:repeat(2,1fr); } }
-  @media (max-width:440px){ .flash-grid{ grid-template-columns:1fr; } }
-  .flashcard{ perspective:1000px; height:132px; cursor:pointer; }
-  .flashcard-inner{ position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
-  .flashcard.flipped .flashcard-inner{ transform:rotateY(180deg); }
-  .flashcard-face{
-    position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; text-align:center; padding:14px;
-  }
-  .flashcard-front{ background:var(--blue-soft); font-family:var(--font-display); font-weight:600; font-size:15.5px; }
-  .flashcard-back{ background:var(--ink); color:var(--paper); transform:rotateY(180deg); font-size:12.5px; line-height:1.42; }
-  .flashcard-hint{ position:absolute; bottom:5px; right:8px; font-family:var(--font-mono); font-size:9px; opacity:.5; }
-
-  /* ---------- quiz ---------- */
-  .score-pill{
-    display:inline-block; font-family:var(--font-mono); font-size:12px; letter-spacing:.04em;
-    background:var(--ink); color:var(--paper); padding:6px 14px; border-radius:999px; margin-bottom:6px;
-  }
-  .quiz-question{ border:1px solid var(--line); border-radius:12px; padding:18px 20px; background:var(--paper-card); margin-top:14px; }
-  .quiz-q-text{ font-family:var(--font-display); font-weight:600; font-size:15.5px; margin-bottom:12px; }
-  .quiz-options{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  @media (max-width:640px){ .quiz-options{ grid-template-columns:1fr; } }
-  .option{
-    text-align:left; padding:10px 14px; border:1px solid var(--line); border-radius:8px;
-    background:#fff; cursor:pointer; font-size:14px; color:var(--ink);
-  }
-  .quiz-question.answered .option{ pointer-events:none; }
-  .option.opt-correct{ background:var(--green-soft); border-color:var(--green); font-weight:600; }
-  .option.opt-incorrect{ background:var(--red-soft); border-color:var(--red); }
-  .quiz-feedback{ margin-top:11px; font-size:12.5px; font-family:var(--font-mono); color:var(--ink-soft); display:none; line-height:1.5; }
-  .quiz-feedback.show{ display:block; }
-
-  .recap-list{ display:flex; flex-direction:column; gap:10px; margin-top:14px; }
-  .recap-item{ display:flex; gap:12px; align-items:flex-start; padding:13px 16px; border:1px solid var(--line);
-    border-radius:10px; background:var(--paper-card); }
-  .recap-num{ font-family:var(--font-mono); font-size:12px; color:var(--amber-dark); flex:0 0 auto; }
-  .final-score{ font-family:var(--font-mono); font-size:14px; background:var(--paper-card); border:1px solid var(--line);
-    display:inline-block; padding:9px 16px; border-radius:8px; margin-bottom:16px; }
-</style>
+<link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body>
+<body class="module1-page">
 
 <div class="deck">
   <header class="deck-top">
-    <button class="brand" id="brandHome" title="Back to start">FTC BLOCKS PROGRAMMING · MODULE 01</button>
+    <nav class="module-links" aria-label="Module navigation">
+      <a class="module-link" href="index.html">Home</a>
+      <a class="module-link" href="module-0.html">&lt;- Module 0</a>
+    </nav>
+    <button class="brand" id="brandHome" title="Back to first slide">FTC BLOCKS PROGRAMMING Â· MODULE 01</button>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     <div class="counter"><span id="slideCurrent">1</span> / <span id="slideTotal">20</span></div>
   </header>
@@ -264,26 +44,26 @@
     <!-- 1 : TITLE -->
     <section class="slide active" data-title="Title">
       <div class="slide-inner">
-        <div class="fig-wrap" style="margin-bottom:22px;">
-          <div class="fig" style="aspect-ratio:16/6;">
-            <img class="fig-img" src="images/hero-team.jpg" alt="Team and robot, module 1 hero photo"
+        <div class="fig-wrap hero-figure-wrap">
+          <div class="fig fig-wide">
+            <img class="fig-img" src="assets/images/hero-team.jpg" alt="Team and robot, module 1 hero photo"
                  onerror="this.parentElement.classList.add('fig--empty')">
             <div class="fig-placeholder">
-              <span class="fig-icon">▨</span>
-              <span class="fig-label">PASTE HERO IMAGE<br><code>images/hero-team.jpg</code></span>
+              <span class="fig-icon">â–¨</span>
+              <span class="fig-label">PASTE HERO IMAGE<br><code>assets/images/hero-team.jpg</code></span>
             </div>
           </div>
         </div>
         <div class="eyebrow">Module 01</div>
         <h1 class="slide-title">FTC Blocks Programming Course</h1>
-        <p class="lead" style="font-size:19px; color:var(--ink);">Introduction — Control System · Required Materials · Using Your Android Device</p>
+        <p class="lead lead-strong">Introduction â€” Control System Â· Required Materials Â· Using Your Android Device</p>
         <div class="meta-row">
-          <span class="meta-chip">⏱ 30–40 min (reading only)</span>
-          <span class="meta-chip">Prerequisite: none — starting point of the course</span>
+          <span class="meta-chip">â± 30â€“40 min (reading only)</span>
+          <span class="meta-chip">Prerequisite: none â€” starting point of the course</span>
         </div>
         <div class="callout">
           <strong>Goal of this module</strong>
-          Understand what the FTC Control System is made of and why it's built that way, and confirm you have the materials you need — before you touch the Blocks editor in Module 4.
+          Understand what the FTC Control System is made of and why it's built that way, and confirm you have the materials you need â€” before you touch the Blocks editor in Module 4.
         </div>
       </div>
     </section>
@@ -291,20 +71,20 @@
     <!-- 2 : WHY THIS MODULE FIRST -->
     <section class="slide" data-title="Why This Module First">
       <div class="slide-inner">
-        <div class="eyebrow">§1.1</div>
+        <div class="eyebrow">Â§1.1</div>
         <h2 class="slide-title">Why This Module Comes First</h2>
         <div class="split">
           <div>
             <p class="lead">Before writing a single block of code, you need a mental model of the system you're programming.</p>
-            <p>FTC robots are controlled by a <strong>two-device architecture</strong> — one device rides on the robot, one stays with the human drivers. Every concept in later modules (op modes, telemetry, gamepad input) only makes sense once you understand how these two devices talk to each other.</p>
+            <p>FTC robots are controlled by a <strong>two-device architecture</strong> â€” one device rides on the robot, one stays with the human drivers. Every concept in later modules (op modes, telemetry, gamepad input) only makes sense once you understand how these two devices talk to each other.</p>
           </div>
-          <div class="card" style="text-align:center;">
-            <div style="display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; padding:10px 0;">
-              <div class="tag" style="background:var(--amber-soft); color:var(--amber-dark);">On the robot</div>
-              <span style="font-family:var(--font-mono); font-size:12px; color:var(--ink-soft);">‑ ‑ ‑ wireless ‑ ‑ ‑</span>
+          <div class="card text-center">
+            <div class="device-pair">
+              <div class="tag tag-warm">On the robot</div>
+              <span class="wireless-label">â€‘ â€‘ â€‘ wireless â€‘ â€‘ â€‘</span>
               <div class="tag">With the drivers</div>
             </div>
-            <p style="margin:8px 0 0; font-size:13px; color:var(--ink-soft);">The full wiring picture is coming up in §1.2.4.</p>
+            <p class="small-muted">The full wiring picture is coming up in Â§1.2.4.</p>
           </div>
         </div>
       </div>
@@ -313,12 +93,12 @@
     <!-- 3 : MATCH PHASES -->
     <section class="slide" data-title="Match Phases">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2.1</div>
+        <div class="eyebrow">Â§1.2.1</div>
         <h2 class="slide-title">Every Match Has Two Phases</h2>
-        <p class="lead">To make both phases possible, FTC pairs two Android-based devices — covered over the next several slides.</p>
+        <p class="lead">To make both phases possible, FTC pairs two Android-based devices â€” covered over the next several slides.</p>
         <table class="tbl">
           <tr><th>Phase</th><th>Also called</th><th>Robot behavior</th></tr>
-          <tr><td><strong>AUTO</strong></td><td>Autonomous</td><td>Zero human input — runs a pre-written program from start to finish.</td></tr>
+          <tr><td><strong>AUTO</strong></td><td>Autonomous</td><td>Zero human input â€” runs a pre-written program from start to finish.</td></tr>
           <tr><td><strong>TELEOP</strong></td><td>Tele-operated</td><td>Live input from up to two human drivers, via gamepads.</td></tr>
         </table>
       </div>
@@ -327,7 +107,7 @@
     <!-- 4 : TWO-DEVICE OVERVIEW -->
     <section class="slide" data-title="Two-Device Overview">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2</div>
+        <div class="eyebrow">Â§1.2</div>
         <h2 class="slide-title">Two Devices, Working as a Pair</h2>
         <div class="grid-2">
           <div class="card">
@@ -338,7 +118,7 @@
           <div class="card">
             <div class="tag">The remote control</div>
             <h3>Driver Station</h3>
-            <p>Stays with the drivers. Sends commands. Displays telemetry — status data sent back from the robot.</p>
+            <p>Stays with the drivers. Sends commands. Displays telemetry â€” status data sent back from the robot.</p>
           </div>
         </div>
       </div>
@@ -347,11 +127,11 @@
     <!-- 5 : ROBOT CONTROLLER -->
     <section class="slide" data-title="Robot Controller">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2.2</div>
+        <div class="eyebrow">Â§1.2.2</div>
         <div class="split">
           <div>
             <div class="tag">The brains</div>
-            <h2 class="slide-title">Device 1 — The Robot Controller</h2>
+            <h2 class="slide-title">Device 1 â€” The Robot Controller</h2>
             <ul>
               <li>Physically mounted <strong>on the robot</strong>.</li>
               <li>Runs the <strong>Robot Controller app</strong>.</li>
@@ -360,11 +140,11 @@
           </div>
           <div class="fig-wrap">
             <div class="fig">
-              <img class="fig-img" src="images/control-hub-closeup.jpg" alt="REV Control Hub mounted on the robot"
+              <img class="fig-img" src="assets/images/control-hub-closeup.jpg" alt="REV Control Hub mounted on the robot"
                    onerror="this.parentElement.classList.add('fig--empty')">
               <div class="fig-placeholder">
-                <span class="fig-icon">▨</span>
-                <span class="fig-label">PASTE IMAGE<br><code>images/control-hub-closeup.jpg</code></span>
+                <span class="fig-icon">â–¨</span>
+                <span class="fig-label">PASTE IMAGE<br><code>assets/images/control-hub-closeup.jpg</code></span>
               </div>
             </div>
             <figcaption>Control Hub, mounted on the robot</figcaption>
@@ -376,19 +156,19 @@
     <!-- 6 : ROBOT CONTROLLER HARDWARE OPTIONS -->
     <section class="slide" data-title="RC Hardware Options">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2.2</div>
+        <div class="eyebrow">Â§1.2.2</div>
         <h2 class="slide-title">Two Supported Hardware Options</h2>
         <div class="grid-2">
           <div class="card">
             <h3>REV Robotics Control Hub</h3>
-            <p>An all-in-one unit — the Robot Controller software is built into the Hub itself. <strong>The standard, recommended option for new teams.</strong></p>
+            <p>An all-in-one unit â€” the Robot Controller software is built into the Hub itself. <strong>The standard, recommended option for new teams.</strong></p>
             <div class="fig-wrap">
               <div class="fig">
-                <img class="fig-img" src="images/control-hub-mounted.jpg" alt="Control Hub, close-up"
+                <img class="fig-img" src="assets/images/control-hub-mounted.jpg" alt="Control Hub, close-up"
                      onerror="this.parentElement.classList.add('fig--empty')">
                 <div class="fig-placeholder">
-                  <span class="fig-icon">▨</span>
-                  <span class="fig-label">PASTE IMAGE<br><code>images/control-hub-mounted.jpg</code></span>
+                  <span class="fig-icon">â–¨</span>
+                  <span class="fig-label">PASTE IMAGE<br><code>assets/images/control-hub-mounted.jpg</code></span>
                 </div>
               </div>
             </div>
@@ -398,11 +178,11 @@
             <p>A REV Expansion Hub paired with a supported Android smartphone. The phone runs the Robot Controller app and connects to the Expansion Hub over USB.</p>
             <div class="fig-wrap">
               <div class="fig">
-                <img class="fig-img" src="images/expansion-hub-phone.jpg" alt="Expansion Hub and phone combo"
+                <img class="fig-img" src="assets/images/expansion-hub-phone.jpg" alt="Expansion Hub and phone combo"
                      onerror="this.parentElement.classList.add('fig--empty')">
                 <div class="fig-placeholder">
-                  <span class="fig-icon">▨</span>
-                  <span class="fig-label">PASTE IMAGE<br><code>images/expansion-hub-phone.jpg</code></span>
+                  <span class="fig-icon">â–¨</span>
+                  <span class="fig-label">PASTE IMAGE<br><code>assets/images/expansion-hub-phone.jpg</code></span>
                 </div>
               </div>
             </div>
@@ -414,26 +194,26 @@
     <!-- 7 : DRIVER STATION -->
     <section class="slide" data-title="Driver Station">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2.3</div>
+        <div class="eyebrow">Â§1.2.3</div>
         <div class="split">
           <div>
             <div class="tag">The remote control</div>
-            <h2 class="slide-title">Device 2 — The Driver Station</h2>
-            <p class="lead">Stays with the team's drivers, off the robot. Runs the Driver Station app. Think of it like a TV remote — it doesn't do the "thinking," it just sends commands and shows status.</p>
-            <p style="font-size:14px; color:var(--ink-soft); margin-bottom:6px;">Connects wirelessly to the Robot Controller to:</p>
+            <h2 class="slide-title">Device 2 â€” The Driver Station</h2>
+            <p class="lead">Stays with the team's drivers, off the robot. Runs the Driver Station app. Think of it like a TV remote â€” it doesn't do the "thinking," it just sends commands and shows status.</p>
+            <p class="compact-muted">Connects wirelessly to the Robot Controller to:</p>
             <ul>
               <li>Select and start / stop op modes</li>
               <li>Send live gamepad input during TELEOP</li>
-              <li>Display telemetry — status data sent back from the robot (used constantly starting Module 4)</li>
+              <li>Display telemetry â€” status data sent back from the robot (used constantly starting Module 4)</li>
             </ul>
           </div>
           <div class="fig-wrap">
             <div class="fig">
-              <img class="fig-img" src="images/driver-hub.jpg" alt="REV Driver Hub in use"
+              <img class="fig-img" src="assets/images/driver-hub.jpg" alt="REV Driver Hub in use"
                    onerror="this.parentElement.classList.add('fig--empty')">
               <div class="fig-placeholder">
-                <span class="fig-icon">▨</span>
-                <span class="fig-label">PASTE IMAGE<br><code>images/driver-hub.jpg</code></span>
+                <span class="fig-icon">â–¨</span>
+                <span class="fig-label">PASTE IMAGE<br><code>assets/images/driver-hub.jpg</code></span>
               </div>
             </div>
             <figcaption>Driver Hub, held by a driver</figcaption>
@@ -445,7 +225,7 @@
     <!-- 8 : DRIVER STATION HARDWARE OPTIONS -->
     <section class="slide" data-title="DS Hardware Options">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2.3</div>
+        <div class="eyebrow">Â§1.2.3</div>
         <h2 class="slide-title">Two Supported Hardware Options</h2>
         <div class="grid-2">
           <div class="card">
@@ -453,11 +233,11 @@
             <p><strong>The standard, recommended option.</strong> Purpose-built for running the Driver Station app.</p>
             <div class="fig-wrap">
               <div class="fig">
-                <img class="fig-img" src="images/driver-hub-closeup.jpg" alt="Driver Hub, close-up"
+                <img class="fig-img" src="assets/images/driver-hub-closeup.jpg" alt="Driver Hub, close-up"
                      onerror="this.parentElement.classList.add('fig--empty')">
                 <div class="fig-placeholder">
-                  <span class="fig-icon">▨</span>
-                  <span class="fig-label">PASTE IMAGE<br><code>images/driver-hub-closeup.jpg</code></span>
+                  <span class="fig-icon">â–¨</span>
+                  <span class="fig-label">PASTE IMAGE<br><code>assets/images/driver-hub-closeup.jpg</code></span>
                 </div>
               </div>
             </div>
@@ -467,11 +247,11 @@
             <p>A supported Android smartphone running the Driver Station app, with one or two gamepads plugged in via an OTG USB adapter.</p>
             <div class="fig-wrap">
               <div class="fig">
-                <img class="fig-img" src="images/phone-with-gamepads.jpg" alt="Phone with OTG adapter and gamepads"
+                <img class="fig-img" src="assets/images/phone-with-gamepads.jpg" alt="Phone with OTG adapter and gamepads"
                      onerror="this.parentElement.classList.add('fig--empty')">
                 <div class="fig-placeholder">
-                  <span class="fig-icon">▨</span>
-                  <span class="fig-label">PASTE IMAGE<br><code>images/phone-with-gamepads.jpg</code></span>
+                  <span class="fig-icon">â–¨</span>
+                  <span class="fig-label">PASTE IMAGE<br><code>assets/images/phone-with-gamepads.jpg</code></span>
                 </div>
               </div>
             </div>
@@ -483,12 +263,12 @@
     <!-- 9 : SCHEMATIC -->
     <section class="slide" data-title="How They Talk">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2.4</div>
+        <div class="eyebrow">Â§1.2.4</div>
         <h2 class="slide-title">How They Talk to Each Other</h2>
         <p class="lead">The Robot Controller and Driver Station share a secure wireless connection. During programming, your laptop joins that same network <em>temporarily</em> to reach the Robot Controller's built-in web server (Module 3).</p>
 
         <div class="schematic-wrap">
-          <svg viewBox="0 0 920 400" style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg">
+          <svg class="schematic-svg" viewBox="0 0 920 400" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 z" class="sw-arrow"/>
@@ -512,11 +292,11 @@
 
             <!-- wireless: laptop to RC -->
             <path d="M140,96 C170,130 300,150 375,160" class="sw-wireless" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-            <text x="150" y="122" class="sw-wlabel">Wi-Fi — programming only</text>
+            <text x="150" y="122" class="sw-wlabel">Wi-Fi â€” programming only</text>
 
             <!-- wireless: DS to RC -->
             <path d="M780,96 C750,130 620,150 548,160" class="sw-wireless" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-            <text x="590" y="122" class="sw-wlabel">Wi-Fi — always on</text>
+            <text x="590" y="122" class="sw-wlabel">Wi-Fi â€” always on</text>
             <text x="590" y="136" class="sw-wlabel">commands / telemetry</text>
 
             <!-- wired trunk down to hardware -->
@@ -527,13 +307,13 @@
             <path d="M590,290 L590,312" class="sw-wired"/>
 
             <rect x="255" y="312" width="150" height="56" rx="8" class="sw-box"/>
-            <text x="330" y="345" text-anchor="middle" class="sw-label" style="font-size:12px;">MOTORS</text>
+            <text x="330" y="345" text-anchor="middle" class="sw-label sw-label-small">MOTORS</text>
 
             <rect x="385" y="312" width="150" height="56" rx="8" class="sw-box"/>
-            <text x="460" y="345" text-anchor="middle" class="sw-label" style="font-size:12px;">SERVOS</text>
+            <text x="460" y="345" text-anchor="middle" class="sw-label sw-label-small">SERVOS</text>
 
             <rect x="515" y="312" width="150" height="56" rx="8" class="sw-box"/>
-            <text x="590" y="345" text-anchor="middle" class="sw-label" style="font-size:12px;">SENSORS</text>
+            <text x="590" y="345" text-anchor="middle" class="sw-label sw-label-small">SENSORS</text>
           </svg>
           <div class="legend-row">
             <span><span class="legend-swatch dash"></span>wireless link</span>
@@ -546,9 +326,9 @@
     <!-- 10 : WHAT'S AN OP MODE -->
     <section class="slide" data-title="What's an Op Mode">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2.5</div>
+        <div class="eyebrow">Â§1.2.5</div>
         <h2 class="slide-title">What's an Op Mode?</h2>
-        <p class="lead">An <strong>op mode</strong> ("operational mode") is the computer program that defines your robot's behavior — follow a line, score a game piece, drive around.</p>
+        <p class="lead">An <strong>op mode</strong> ("operational mode") is the computer program that defines your robot's behavior â€” follow a line, score a game piece, drive around.</p>
         <p>The Robot Controller runs whichever op mode is selected on the Driver Station.</p>
       </div>
     </section>
@@ -556,7 +336,7 @@
     <!-- 11 : THREE TOOLS -->
     <section class="slide" data-title="Three Tools">
       <div class="slide-inner">
-        <div class="eyebrow">§1.2.5</div>
+        <div class="eyebrow">Â§1.2.5</div>
         <h2 class="slide-title">Three Ways to Write an Op Mode</h2>
         <table class="tbl">
           <tr><th>Tool</th><th>Type</th><th>Best for</th></tr>
@@ -566,51 +346,51 @@
         </table>
         <div class="callout">
           <strong>Key takeaway</strong>
-          The Blocks tool isn't a "toy version" — it produces the same underlying op mode structure you'd write in Java. What you learn here (init blocks, loops, telemetry) transfers directly if your team moves to Java later.
+          The Blocks tool isn't a "toy version" â€” it produces the same underlying op mode structure you'd write in Java. What you learn here (init blocks, loops, telemetry) transfers directly if your team moves to Java later.
         </div>
       </div>
     </section>
 
     <!-- 12 : MATERIALS - HARDWARE -->
-    <section class="slide" data-title="Materials — Hardware">
+    <section class="slide" data-title="Materials â€” Hardware">
       <div class="slide-inner">
-        <div class="eyebrow">§1.3</div>
-        <h2 class="slide-title">Required Materials — Hardware</h2>
+        <div class="eyebrow">Â§1.3</div>
+        <h2 class="slide-title">Required Materials â€” Hardware</h2>
         <div class="split">
           <div class="checklist-block">
             <span class="check-count"><span class="cc-done">0</span>/<span class="cc-total">3</span> confirmed</span>
             <div class="checklist">
-              <div class="checklist-item"><span class="box">✓</span><span class="txt"><strong>Robot Controller device</strong> — Control Hub, or Expansion Hub + a supported Android smartphone.</span></div>
-              <div class="checklist-item"><span class="box">✓</span><span class="txt"><strong>Driver Station device</strong> — Driver Hub, or a supported Android smartphone. See FTC Competition Manual rule R901 for the exact legal device list.</span></div>
-              <div class="checklist-item"><span class="box">✓</span><span class="txt"><strong>Gamepad(s)</strong> for TELEOP control — Logitech F310 is the common reference gamepad in the official docs.</span></div>
+              <div class="checklist-item"><span class="box">âœ“</span><span class="txt"><strong>Robot Controller device</strong> â€” Control Hub, or Expansion Hub + a supported Android smartphone.</span></div>
+              <div class="checklist-item"><span class="box">âœ“</span><span class="txt"><strong>Driver Station device</strong> â€” Driver Hub, or a supported Android smartphone. See FTC Competition Manual rule R901 for the exact legal device list.</span></div>
+              <div class="checklist-item"><span class="box">âœ“</span><span class="txt"><strong>Gamepad(s)</strong> for TELEOP control â€” Logitech F310 is the common reference gamepad in the official docs.</span></div>
             </div>
           </div>
           <div class="fig-wrap">
             <div class="fig">
-              <img class="fig-img" src="images/gamepad-f310.jpg" alt="Logitech F310 gamepad"
+              <img class="fig-img" src="assets/images/gamepad-f310.jpg" alt="Logitech F310 gamepad"
                    onerror="this.parentElement.classList.add('fig--empty')">
               <div class="fig-placeholder">
-                <span class="fig-icon">▨</span>
-                <span class="fig-label">PASTE IMAGE<br><code>images/gamepad-f310.jpg</code></span>
+                <span class="fig-icon">â–¨</span>
+                <span class="fig-label">PASTE IMAGE<br><code>assets/images/gamepad-f310.jpg</code></span>
               </div>
             </div>
-            <figcaption>Logitech F310 — reference gamepad</figcaption>
+            <figcaption>Logitech F310 â€” reference gamepad</figcaption>
           </div>
         </div>
       </div>
     </section>
 
     <!-- 13 : MATERIALS - SOFTWARE/NETWORK -->
-    <section class="slide" data-title="Materials — Software">
+    <section class="slide" data-title="Materials â€” Software">
       <div class="slide-inner">
-        <div class="eyebrow">§1.3</div>
-        <h2 class="slide-title">Required Materials — Software &amp; Network</h2>
+        <div class="eyebrow">Â§1.3</div>
+        <h2 class="slide-title">Required Materials â€” Software &amp; Network</h2>
         <div class="checklist-block">
           <span class="check-count"><span class="cc-done">0</span>/<span class="cc-total">3</span> confirmed</span>
           <div class="checklist">
-            <div class="checklist-item"><span class="box">✓</span><span class="txt"><strong>Laptop</strong> running Windows 7, 8, 10, or 11, fully updated, with Wi-Fi. Chromebooks, Android tablets, and Mac laptops also work — menu paths may differ slightly.</span></div>
-            <div class="checklist-item"><span class="box">✓</span><span class="txt">A <strong>JavaScript-enabled web browser</strong> — Google Chrome is officially recommended.</span></div>
-            <div class="checklist-item"><span class="box">✓</span><span class="txt">Access to a <strong>wireless network</strong> — specifically the robot's own Program &amp; Manage Wi-Fi network (§1.2.4). General internet access is not required.</span></div>
+            <div class="checklist-item"><span class="box">âœ“</span><span class="txt"><strong>Laptop</strong> running Windows 7, 8, 10, or 11, fully updated, with Wi-Fi. Chromebooks, Android tablets, and Mac laptops also work â€” menu paths may differ slightly.</span></div>
+            <div class="checklist-item"><span class="box">âœ“</span><span class="txt">A <strong>JavaScript-enabled web browser</strong> â€” Google Chrome is officially recommended.</span></div>
+            <div class="checklist-item"><span class="box">âœ“</span><span class="txt">Access to a <strong>wireless network</strong> â€” specifically the robot's own Program &amp; Manage Wi-Fi network (Â§1.2.4). General internet access is not required.</span></div>
           </div>
         </div>
         <div class="note">
@@ -622,34 +402,34 @@
     <!-- 14 : ANDROID DEVICE USAGE -->
     <section class="slide" data-title="Android Device">
       <div class="slide-inner">
-        <div class="eyebrow">§1.4</div>
+        <div class="eyebrow">Â§1.4</div>
         <h2 class="slide-title">Using Your Android Device</h2>
         <p class="lead">Applies to whichever Android device(s) your team uses as Driver Station and/or Robot Controller.</p>
         <div class="split">
-          <div class="grid-2" style="grid-template-columns:1fr; gap:16px;">
+          <div class="grid-2 grid-one">
             <div class="card">
               <h3>REV Driver Hub</h3>
-              <p>Purpose-built device for running the Driver Station app. Comes with physical buttons and a screen for selecting op modes and viewing match status — no full phone needed.</p>
+              <p>Purpose-built device for running the Driver Station app. Comes with physical buttons and a screen for selecting op modes and viewing match status â€” no full phone needed.</p>
             </div>
             <div class="card">
               <h3>Android Smartphone (if used instead)</h3>
               <ul>
                 <li>Must be on FTC's supported device list.</li>
-                <li>Keep it <strong>unlocked</strong> and set to never auto-sleep while acting as Robot Controller or Driver Station — the app must stay in the foreground and active during a match.</li>
+                <li>Keep it <strong>unlocked</strong> and set to never auto-sleep while acting as Robot Controller or Driver Station â€” the app must stay in the foreground and active during a match.</li>
                 <li>Basic comfort with Android's home / back / recent-apps navigation is assumed, since you'll switch between the FTC app and system settings (Wi-Fi, etc.) during setup.</li>
               </ul>
             </div>
           </div>
           <div class="fig-wrap">
             <div class="fig">
-              <img class="fig-img" src="images/driver-station-app.jpg" alt="Driver Station app, op mode select screen"
+              <img class="fig-img" src="assets/images/driver-station-app.jpg" alt="Driver Station app, op mode select screen"
                    onerror="this.parentElement.classList.add('fig--empty')">
               <div class="fig-placeholder">
-                <span class="fig-icon">▨</span>
-                <span class="fig-label">PASTE SCREENSHOT<br><code>images/driver-station-app.jpg</code></span>
+                <span class="fig-icon">â–¨</span>
+                <span class="fig-label">PASTE SCREENSHOT<br><code>assets/images/driver-station-app.jpg</code></span>
               </div>
             </div>
-            <figcaption>Driver Station app — op mode select screen</figcaption>
+            <figcaption>Driver Station app â€” op mode select screen</figcaption>
           </div>
         </div>
       </div>
@@ -658,26 +438,26 @@
     <!-- 15 : PRACTICAL TIPS -->
     <section class="slide" data-title="Practical Tips">
       <div class="slide-inner">
-        <div class="eyebrow">§1.4</div>
+        <div class="eyebrow">Â§1.4</div>
         <h2 class="slide-title">Two Habits That Save You Headaches</h2>
         <div class="split">
-          <div class="grid-2" style="grid-template-columns:1fr; gap:16px;">
+          <div class="grid-2 grid-one">
             <div class="card">
               <h3>Label your devices</h3>
               <p>Tape and a marker on the Robot Controller vs. the Driver Station. It's easy to mix them up, and installing the wrong app on the wrong device causes confusing failures later.</p>
             </div>
             <div class="card">
               <h3>Keep both devices charged</h3>
-              <p>A low battery mid-match or mid-programming-session is a common — and completely avoidable — failure.</p>
+              <p>A low battery mid-match or mid-programming-session is a common â€” and completely avoidable â€” failure.</p>
             </div>
           </div>
           <div class="fig-wrap">
             <div class="fig">
-              <img class="fig-img" src="images/labeled-devices.jpg" alt="Devices labeled with tape"
+              <img class="fig-img" src="assets/images/labeled-devices.jpg" alt="Devices labeled with tape"
                    onerror="this.parentElement.classList.add('fig--empty')">
               <div class="fig-placeholder">
-                <span class="fig-icon">▨</span>
-                <span class="fig-label">PASTE IMAGE<br><code>images/labeled-devices.jpg</code></span>
+                <span class="fig-icon">â–¨</span>
+                <span class="fig-label">PASTE IMAGE<br><code>assets/images/labeled-devices.jpg</code></span>
               </div>
             </div>
             <figcaption>Robot Controller and Driver Station, clearly labeled</figcaption>
@@ -689,17 +469,17 @@
     <!-- 16 : MODULE CHECKLIST -->
     <section class="slide" data-title="Module Checklist">
       <div class="slide-inner">
-        <div class="eyebrow">§1.5</div>
+        <div class="eyebrow">Â§1.5</div>
         <h2 class="slide-title">Before You Move to Module 2</h2>
-        <p class="lead">Module 2 — Configuring Your Hardware. Confirm each item below first.</p>
+        <p class="lead">Module 2 â€” Configuring Your Hardware. Confirm each item below first.</p>
         <div class="checklist-block">
           <span class="check-count"><span class="cc-done">0</span>/<span class="cc-total">5</span> confirmed</span>
           <div class="checklist">
-            <div class="checklist-item"><span class="box">✓</span><span class="txt">I can explain the difference between the Robot Controller and the Driver Station, in one sentence each.</span></div>
-            <div class="checklist-item"><span class="box">✓</span><span class="txt">I know which hardware my team is using for each role (Control Hub vs. Expansion Hub + phone; Driver Hub vs. phone).</span></div>
-            <div class="checklist-item"><span class="box">✓</span><span class="txt">I understand that an op mode is the program that runs on the Robot Controller, and that Blocks is one of three ways to write one.</span></div>
-            <div class="checklist-item"><span class="box">✓</span><span class="txt">I have a Windows laptop (or equivalent) with a JavaScript-enabled browser (Chrome recommended) ready to go.</span></div>
-            <div class="checklist-item"><span class="box">✓</span><span class="txt">My Android device(s) are charged, unlocked, and I know basic navigation on them.</span></div>
+            <div class="checklist-item"><span class="box">âœ“</span><span class="txt">I can explain the difference between the Robot Controller and the Driver Station, in one sentence each.</span></div>
+            <div class="checklist-item"><span class="box">âœ“</span><span class="txt">I know which hardware my team is using for each role (Control Hub vs. Expansion Hub + phone; Driver Hub vs. phone).</span></div>
+            <div class="checklist-item"><span class="box">âœ“</span><span class="txt">I understand that an op mode is the program that runs on the Robot Controller, and that Blocks is one of three ways to write one.</span></div>
+            <div class="checklist-item"><span class="box">âœ“</span><span class="txt">I have a Windows laptop (or equivalent) with a JavaScript-enabled browser (Chrome recommended) ready to go.</span></div>
+            <div class="checklist-item"><span class="box">âœ“</span><span class="txt">My Android device(s) are charged, unlocked, and I know basic navigation on them.</span></div>
           </div>
         </div>
       </div>
@@ -709,7 +489,7 @@
     <section class="slide" data-title="Glossary">
       <div class="slide-inner">
         <div class="eyebrow">Reference</div>
-        <h2 class="slide-title">Quick Reference — Flip the Cards</h2>
+        <h2 class="slide-title">Quick Reference â€” Flip the Cards</h2>
         <p class="lead">Tap a card to see the definition.</p>
         <div class="flash-grid">
           <div class="flashcard" tabindex="0"><div class="flashcard-inner">
@@ -749,7 +529,7 @@
     </section>
 
     <!-- 18 : QUIZ PART 1 -->
-    <section class="slide" data-title="Quiz — Part 1">
+    <section class="slide" data-title="Quiz â€” Part 1">
       <div class="slide-inner">
         <div class="eyebrow">Knowledge check</div>
         <h2 class="slide-title">Part 1 of 2</h2>
@@ -774,7 +554,7 @@
             <button class="option" data-correct="false">Both</button>
             <button class="option" data-correct="false">Neither</button>
           </div>
-          <div class="quiz-feedback" data-explain="TELEOP is tele-operated — up to two human drivers control the robot live."></div>
+          <div class="quiz-feedback" data-explain="TELEOP is tele-operated â€” up to two human drivers control the robot live."></div>
         </div>
 
         <div class="quiz-question">
@@ -785,13 +565,13 @@
             <button class="option" data-correct="true">Control Hub</button>
             <button class="option" data-correct="false">Android phone alone</button>
           </div>
-          <div class="quiz-feedback" data-explain="The Control Hub is an all-in-one unit — the Robot Controller software is built in."></div>
+          <div class="quiz-feedback" data-explain="The Control Hub is an all-in-one unit â€” the Robot Controller software is built in."></div>
         </div>
       </div>
     </section>
 
     <!-- 19 : QUIZ PART 2 -->
-    <section class="slide" data-title="Quiz — Part 2">
+    <section class="slide" data-title="Quiz â€” Part 2">
       <div class="slide-inner">
         <div class="eyebrow">Knowledge check</div>
         <h2 class="slide-title">Part 2 of 2</h2>
@@ -816,7 +596,7 @@
             <button class="option" data-correct="false">Something that only works for AUTO</button>
             <button class="option" data-correct="false">A separate, unrelated app</button>
           </div>
-          <div class="quiz-feedback" data-explain="Blocks isn't a toy version — it builds the same op mode structure you'd write in Java."></div>
+          <div class="quiz-feedback" data-explain="Blocks isn't a toy version â€” it builds the same op mode structure you'd write in Java."></div>
         </div>
 
         <div class="quiz-question">
@@ -827,7 +607,7 @@
             <button class="option" data-correct="false">Bluetooth</button>
             <button class="option" data-correct="false">A mobile hotspot</button>
           </div>
-          <div class="quiz-feedback" data-explain="You don't need general internet access — just the robot's own Program &amp; Manage network."></div>
+          <div class="quiz-feedback" data-explain="You don't need general internet access â€” just the robot's own Program &amp; Manage network."></div>
         </div>
       </div>
     </section>
@@ -835,19 +615,19 @@
     <!-- 20 : WRAP-UP -->
     <section class="slide" data-title="Wrap-up">
       <div class="slide-inner">
-        <div class="eyebrow">Next →</div>
-        <h2 class="slide-title">Module 1 — Wrapped Up</h2>
+        <div class="eyebrow">Next â†’</div>
+        <h2 class="slide-title">Module 1 â€” Wrapped Up</h2>
         <div class="final-score">Knowledge check score: <span id="finalScore">0 / 6</span></div>
 
         <div class="recap-list">
-          <div class="recap-item"><span class="recap-num">01</span><span>Two devices, one team — Robot Controller (the brains, on the robot) and Driver Station (the remote, with the drivers).</span></div>
+          <div class="recap-item"><span class="recap-num">01</span><span>Two devices, one team â€” Robot Controller (the brains, on the robot) and Driver Station (the remote, with the drivers).</span></div>
           <div class="recap-item"><span class="recap-num">02</span><span>AUTO means zero human input. TELEOP means live gamepad input.</span></div>
-          <div class="recap-item"><span class="recap-num">03</span><span>Blocks builds a real op mode — the same structure you'd write in Java.</span></div>
+          <div class="recap-item"><span class="recap-num">03</span><span>Blocks builds a real op mode â€” the same structure you'd write in Java.</span></div>
         </div>
 
         <div class="note">
-          <strong style="display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--blue); margin-bottom:5px;">Next up</strong>
-          Module 2 — Configuring Your Hardware, where you'll build the configuration file that tells the Robot Controller what motors, servos, and sensors are physically connected.
+          <strong class="note-label">Next up</strong>
+          Module 2 â€” Configuring Your Hardware, where you'll build the configuration file that tells the Robot Controller what motors, servos, and sensors are physically connected.
         </div>
       </div>
     </section>
@@ -855,109 +635,17 @@
   </main>
 
   <footer class="deck-bottom">
-    <button class="nav-btn" id="prevBtn">← Prev</button>
+    <button class="nav-btn" id="prevBtn">â† Prev</button>
     <div class="dots" id="dots"></div>
-    <button class="nav-btn" id="nextBtn">Next →</button>
+    <button class="nav-btn" id="nextBtn">Next â†’</button>
   </footer>
-  <div class="hint">use ← / → to navigate</div>
+  <div class="hint">use â† / â†’ to navigate</div>
 </div>
 
-<script>
-  const slides = Array.from(document.querySelectorAll('.slide'));
-  const total = slides.length;
-  let idx = 0;
-  let quizScore = 0;
-
-  const elCurrent = document.getElementById('slideCurrent');
-  const elTotal = document.getElementById('slideTotal');
-  const fill = document.getElementById('progressFill');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const dotsWrap = document.getElementById('dots');
-  elTotal.textContent = total;
-
-  slides.forEach((s, i) => {
-    const d = document.createElement('button');
-    d.className = 'dot';
-    d.title = s.dataset.title || ('Slide ' + (i + 1));
-    d.addEventListener('click', () => goTo(i));
-    dotsWrap.appendChild(d);
-  });
-  const dots = Array.from(dotsWrap.children);
-
-  function goTo(i) {
-    i = Math.max(0, Math.min(total - 1, i));
-    slides[idx].classList.remove('active');
-    idx = i;
-    slides[idx].classList.add('active');
-    slides[idx].scrollTop = 0;
-    elCurrent.textContent = idx + 1;
-    fill.style.width = ((idx + 1) / total * 100) + '%';
-    dots.forEach((d, j) => d.classList.toggle('active', j === idx));
-    prevBtn.disabled = idx === 0;
-    nextBtn.disabled = idx === total - 1;
-    if (slides[idx].dataset.title === 'Wrap-up') updateFinalScore();
-  }
-
-  prevBtn.addEventListener('click', () => goTo(idx - 1));
-  nextBtn.addEventListener('click', () => goTo(idx + 1));
-  document.getElementById('brandHome').addEventListener('click', () => goTo(0));
-
-  window.addEventListener('keydown', (e) => {
-    if (['ArrowRight', 'PageDown'].includes(e.key)) { e.preventDefault(); goTo(idx + 1); }
-    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); goTo(idx - 1); }
-  });
-
-  function handleAnswer(opt) {
-    const q = opt.closest('.quiz-question');
-    if (q.classList.contains('answered')) return;
-    q.classList.add('answered');
-    const correct = opt.dataset.correct === 'true';
-    opt.classList.add(correct ? 'opt-correct' : 'opt-incorrect');
-    if (!correct) {
-      const correctOpt = q.querySelector('.option[data-correct="true"]');
-      if (correctOpt) correctOpt.classList.add('opt-correct');
-    } else {
-      quizScore++;
-      document.querySelectorAll('.score-value').forEach(el => el.textContent = quizScore);
-    }
-    const fb = q.querySelector('.quiz-feedback');
-    if (fb) {
-      fb.textContent = (correct ? 'Correct. ' : 'Not quite. ') + fb.dataset.explain;
-      fb.classList.add('show');
-    }
-  }
-
-  function updateFinalScore() {
-    const el = document.getElementById('finalScore');
-    if (el) el.textContent = quizScore + ' / 6';
-  }
-
-  document.addEventListener('click', (e) => {
-    const item = e.target.closest('.checklist-item');
-    if (item) {
-      item.classList.toggle('checked');
-      const block = item.closest('.checklist-block');
-      if (block) {
-        const done = block.querySelectorAll('.checklist-item.checked').length;
-        const doneEl = block.querySelector('.cc-done');
-        if (doneEl) doneEl.textContent = done;
-      }
-    }
-    const card = e.target.closest('.flashcard');
-    if (card) card.classList.toggle('flipped');
-
-    const opt = e.target.closest('.option');
-    if (opt) handleAnswer(opt);
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter' && e.key !== ' ') return;
-    const el = document.activeElement;
-    if (el && el.classList.contains('flashcard')) { e.preventDefault(); el.classList.toggle('flipped'); }
-  });
-
-  goTo(0);
-</script>
+<script src="assets/js/module-1.js"></script>
 </body>
 </html>
+
+
+
+

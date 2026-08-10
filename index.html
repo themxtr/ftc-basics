@@ -4,97 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FTC Basics Course</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --paper:#EDF0EA;
-  --paper-card:#FAFAF6;
-  --ink:#1C2420;
-  --ink-soft:#5B655D;
-  --line:#CBD3C9;
-  --amber:#E8A33D;
-  --amber-dark:#C67F1C;
-  --blue:#2C5F86;
-  --blue-soft:#DEE9EF;
-  --green:#3E8A5B;
-  --font-display:'Space Grotesk','Arial Narrow',sans-serif;
-  --font-body:'IBM Plex Sans',Arial,sans-serif;
-  --font-mono:'IBM Plex Mono','Courier New',monospace;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  min-height:100vh;
-  color:var(--ink);
-  font-family:var(--font-body);
-  background:
-    radial-gradient(circle at 12% 18%, rgba(232,163,61,.28), transparent 30%),
-    radial-gradient(circle at 84% 8%, rgba(44,95,134,.20), transparent 28%),
-    repeating-linear-gradient(0deg, rgba(28,36,32,.035) 0 1px, transparent 1px 28px),
-    repeating-linear-gradient(90deg, rgba(28,36,32,.035) 0 1px, transparent 1px 28px),
-    var(--paper);
-}
-main{width:min(1120px, calc(100% - 32px)); margin:0 auto; padding:48px 0;}
-.hero{display:grid; grid-template-columns:1.15fr .85fr; gap:28px; align-items:end; margin-bottom:28px;}
-.eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--blue); margin-bottom:12px;}
-h1{font-family:var(--font-display); font-size:clamp(42px, 7vw, 88px); line-height:.92; margin:0 0 18px; letter-spacing:-.05em;}
-p{line-height:1.6; margin:0;}
-.lead{font-size:18px; color:var(--ink-soft); max-width:760px;}
-.panel{background:rgba(250,250,246,.78); border:1px solid var(--line); border-radius:22px; padding:24px; box-shadow:0 18px 50px rgba(28,36,32,.08);}
-.status{font-family:var(--font-mono); font-size:12px; color:var(--ink-soft); display:grid; gap:10px;}
-.status span{display:flex; justify-content:space-between; gap:18px; border-bottom:1px solid var(--line); padding-bottom:10px;}
-.grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; margin-top:24px;}
-.card{position:relative; overflow:hidden; min-height:310px; background:var(--paper-card); border:1px solid var(--line); border-radius:22px; padding:28px; display:flex; flex-direction:column; justify-content:space-between; text-decoration:none; color:inherit; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;}
-.card:hover{transform:translateY(-4px); border-color:var(--blue); box-shadow:0 20px 50px rgba(28,36,32,.12);}
-.card::after{content:""; position:absolute; width:190px; height:190px; right:-68px; top:-68px; border-radius:50%; background:var(--blue-soft); z-index:0;}
-.card:nth-child(2)::after{background:#FBEAC8;}
-.card > *{position:relative; z-index:1;}
-.kicker{font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--blue);}
-h2{font-family:var(--font-display); font-size:34px; line-height:1; margin:18px 0 14px;}
-.card p{color:var(--ink-soft);}
-.cta{display:inline-flex; width:max-content; align-items:center; gap:9px; margin-top:28px; font-family:var(--font-mono); font-size:13px; background:var(--ink); color:var(--paper); border-radius:999px; padding:11px 16px;}
-.note{margin-top:20px; color:var(--ink-soft); font-size:14px;}
-@media (max-width:760px){.hero,.grid{grid-template-columns:1fr;} main{padding:28px 0;} .card{min-height:250px;}}
-</style>
+<link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body>
+<body class="index-page">
 <main>
-  <section class="hero">
+  <section class="index-hero">
     <div>
-      <div class="eyebrow">FTC Basics</div>
+      <div class="index-eyebrow">FTC Basics</div>
       <h1>Coach Guide + Blocks Course</h1>
-      <p class="lead">A two-module starting point for team organization, FTC vocabulary, and the first FTC Blocks programming lesson.</p>
+      <p class="index-lead">A two-module starting point for team organization, FTC vocabulary, and the first FTC Blocks programming lesson.</p>
     </div>
-    <aside class="panel status" aria-label="Course status">
+    <aside class="index-panel index-status" aria-label="Course status">
       <span><strong>Module 0</strong><em>GM0 walkthrough</em></span>
       <span><strong>Module 1</strong><em>Control system intro</em></span>
-      <span><strong>Images</strong><em>Use /images</em></span>
+      <span><strong>Images</strong><em>Use assets/images</em></span>
     </aside>
   </section>
 
-  <section class="grid" aria-label="Modules">
-    <a class="card" href="module-0.html">
+  <section class="index-grid" aria-label="Modules">
+    <a class="index-card" href="module-0.html">
       <div>
-        <span class="kicker">Module 00</span>
+        <span class="index-kicker">Module 00</span>
         <h2>FTC Coach's Guide</h2>
         <p>Team structures, mentor requirements, recruiting, lingo, coding-track decisions, and the GM0 areas to study next.</p>
       </div>
-      <span class="cta">Open module 0 -></span>
+      <span class="index-cta">Open module 0 -&gt;</span>
     </a>
 
-    <a class="card" href="module-1.html">
+    <a class="index-card" href="module-1.html">
       <div>
-        <span class="kicker">Module 01</span>
+        <span class="index-kicker">Module 01</span>
         <h2>Blocks Programming Introduction</h2>
         <p>The existing slide deck covering the FTC control system, required materials, Android devices, flashcards, and a short quiz.</p>
       </div>
-      <span class="cta">Open module 1 -></span>
+      <span class="index-cta">Open module 1 -&gt;</span>
     </a>
   </section>
 
-  <p class="note">Place course photos and screenshots in <code>images/</code>. Module 1 already points to image filenames in that folder.</p>
+  <p class="index-note">Place course photos and screenshots in <code>assets/images/</code>. Module 1 already points to image filenames in that folder.</p>
 </main>
 </body>
 </html>
+
