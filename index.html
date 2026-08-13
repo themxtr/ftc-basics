@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body class="index-page">
+<button class="refs-btn" id="refsBtn" aria-haspopup="dialog" aria-controls="refsOverlay">References</button>
 <main>
   <section class="index-hero">
     <div>
@@ -16,7 +17,6 @@
     </div>
     
   </section>
-
   <section class="index-grid" aria-label="Modules">
     <a class="index-card" href="module-0.html">
       <div>
@@ -26,7 +26,6 @@
       </div>
       <span class="index-cta">Open module 0 -&gt;</span>
     </a>
-
     <a class="index-card" href="module-1.html">
       <div>
         <span class="index-kicker">Module 01</span>
@@ -45,9 +44,51 @@
 </a>
   </section>
   
-
   <p class="index-note">Place course photos and screenshots in <code>assets/images/</code>. Module 1 already points to image filenames in that folder.</p>
 </main>
+
+<div class="refs-overlay" id="refsOverlay" role="dialog" aria-modal="true" aria-labelledby="refsTitle">
+  <div class="refs-modal">
+    <div class="refs-modal-head">
+      <h3 id="refsTitle">References</h3>
+      <button class="refs-close" id="refsClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="refs-table-wrap">
+      <table class="refs-table">
+        <thead>
+          <tr><th>Category</th><th>Link</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Official FTC India</td><td><a href="https://www.firstrobotics.co.in/first-tech-challenge/" target="_blank" rel="noopener">firstrobotics.co.in</a></td></tr>
+          <tr><td>Blocks Programming</td><td><a href="https://www.youtube.com/playlist?list=PLEuGrYl8iBm4A4yrRcatGcK7q0od0LYov" target="_blank" rel="noopener">Blocks Tutorials playlist</a></td></tr>
+          <tr><td>Blocks Programming</td><td><a href="https://ftc-docs.firstinspires.org/en/latest/programming_resources/blocks/Blocks-Tutorial.html" target="_blank" rel="noopener">Blocks Tutorial docs</a></td></tr>
+          <tr><td>Simulation</td><td><a href="https://ftcsim.org/" target="_blank" rel="noopener">ftcsim.org</a></td></tr>
+          <tr><td>Hardware &ndash; Starter Kit</td><td><a href="http://gobilda.com/ftc-starter-kit-2026-2027-season/" target="_blank" rel="noopener">goBILDA Starter Kit</a></td></tr>
+          <tr><td>Hardware &ndash; Control Hub</td><td><a href="https://www.revrobotics.com/rev-35-1906/" target="_blank" rel="noopener">REV Control Hub</a></td></tr>
+          <tr><td>Skill Builders</td><td><a href="https://training.firstinspires.org/learn/course/ftc-skill-builders-26-27/welcome/introduction" target="_blank" rel="noopener">FTC Skill Builders</a></td></tr>
+          <tr><td>Rules</td><td><a href="https://ftc-resources.firstinspires.org/ftc/game/manual" target="_blank" rel="noopener">Game Manual</a></td></tr>
+          <tr><td>Guide, Lingo</td><td><a href="https://gm0.org/en/latest/docs/start-here.html" target="_blank" rel="noopener">Start Here &ndash; Game Manual 0</a></td></tr>
+          <tr><td>Team Building</td><td><a href="#" target="_blank" rel="noopener">Running a FIRST Team.pdf (add your Drive link)</a></td></tr>
+          <tr><td>Starter Bot Build</td><td><a href="https://www.gobilda.com/content/user_manuals/2026-2027_preseason_ftc_starterbot_assembly_instructions.min.pdf" target="_blank" rel="noopener">goBILDA Assembly Instructions</a></td></tr>
+          <tr><td>Starter Bot Build</td><td><a href="https://www.gobilda.com/ftc-starter-bot-resource-guide-2026-2027-season/" target="_blank" rel="noopener">goBILDA Starter Bot Resource Guide</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var btn = document.getElementById('refsBtn');
+    var overlay = document.getElementById('refsOverlay');
+    var closeBtn = document.getElementById('refsClose');
+    function open(){ overlay.classList.add('open'); }
+    function close(){ overlay.classList.remove('open'); }
+    btn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', function(e){ if(e.target === overlay) close(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  })();
+</script>
 </body>
 </html>
-
