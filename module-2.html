@@ -53,6 +53,16 @@
     white-space:nowrap;
   }
   .appbar h2 span{ color:var(--orange); }
+  .module-links{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .module-link{
+    color:var(--ink-dim); text-decoration:none;
+    border:1.5px solid var(--blue-line); border-radius:999px;
+    padding:7px 12px; font-family:'Space Grotesk', sans-serif;
+    font-size:0.78rem; font-weight:600; white-space:nowrap;
+  }
+  .module-link:hover{ border-color:var(--orange-dim); color:var(--ink); }
+  .module-link:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+  @media (max-width:720px){ .module-links{ width:100%; } .module-link{ flex:1; text-align:center; } }
   .app-modes{ display:flex; gap:8px; }
   .app-mode-btn{
     font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.78rem;
@@ -235,6 +245,10 @@
 <body>
 
 <div class="appbar">
+  <nav class="module-links" aria-label="Module navigation">
+    <a class="module-link" href="index.html">Home</a>
+    <a class="module-link" href="module-1.html">&lt;- Module 1</a>
+  </nav>
   <h2>What's Actually <span>Is A Robot?</span></h2>
   <div class="app-modes">
     <button class="app-mode-btn active" data-view="slidesView">Slides</button>
