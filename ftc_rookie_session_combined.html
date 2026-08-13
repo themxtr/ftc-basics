@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's Actually Is A Robot?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --blue-deep:#122A4A;
+    --blue-mid:#1D3F6B;
+    --blue-card:#24466F;
+    --blue-line: rgba(180,205,235,0.18);
+    --ink:#E8F1FF;
+    --ink-dim:#9FB6D6;
+    --orange:#FF6B1A;
+    --orange-dim:#C4531A;
+    --green:#4CAF7D;
+    --red:#E2564F;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    background:
+      linear-gradient(var(--blue-line) 1px, transparent 1px) 0 0/40px 40px,
+      linear-gradient(90deg, var(--blue-line) 1px, transparent 1px) 0 0/40px 40px,
+      var(--blue-deep);
+    color:var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  /* ---- App top bar (mode switch) ---- */
+  .appbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 22px;
+    border-bottom:1.5px solid var(--blue-line);
+    flex-shrink:0;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .appbar h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:0.95rem;
+    margin:0;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .appbar h2 span{ color:var(--orange); }
+  .app-modes{ display:flex; gap:8px; }
+  .app-mode-btn{
+    font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.78rem;
+    color:var(--ink-dim); background:transparent; border:1.5px solid var(--blue-line);
+    border-radius:999px; padding:7px 16px; cursor:pointer; transition:all .15s ease;
+  }
+  .app-mode-btn:hover{ border-color:var(--orange-dim); color:var(--ink); }
+  .app-mode-btn.active{ background:var(--orange); border-color:var(--orange); color:var(--blue-deep); }
+  .app-mode-btn:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+
+  .view{ flex:1; min-height:0; display:none; flex-direction:column; }
+  .view.active{ display:flex; }
+
+  /* =======================================================
+     SLIDES VIEW
+  ======================================================= */
+  .topbar{
+    display:flex; align-items:center; gap:14px;
+    padding:12px 22px;
+    border-bottom:1.5px solid var(--blue-line);
+    flex-shrink:0;
+  }
+  .topbar .count{ font-size:0.72rem; color:var(--ink-dim); white-space:nowrap; }
+  .progress-bar{ flex:1; height:5px; border-radius:999px; background:var(--blue-line); overflow:hidden; }
+  .progress-fill{ height:100%; background:var(--orange); transition:width .3s ease; }
+  .notes-toggle{
+    font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.72rem;
+    color:var(--ink-dim); background:transparent; border:1.5px solid var(--blue-line);
+    border-radius:999px; padding:6px 14px; cursor:pointer; white-space:nowrap;
+  }
+  .notes-toggle.active{ background:var(--orange); border-color:var(--orange); color:var(--blue-deep); }
+  .notes-toggle:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+
+  .stage{
+    flex:1;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px 40px;
+    min-height:0;
+  }
+  .slide{
+    width:100%; max-width:920px;
+    display:none;
+    flex-direction:column;
+    gap:16px;
+  }
+  .slide.active{ display:flex; }
+
+  .eyebrow{ font-size:0.72rem; letter-spacing:0.12em; color:var(--orange); text-transform:uppercase; }
+  .headline{
+    font-family:'Space Grotesk', sans-serif; font-weight:700;
+    font-size:clamp(1.6rem, 3.6vw, 2.5rem);
+    line-height:1.15; margin:0; color:var(--ink);
+  }
+  .headline span{ color:var(--orange); }
+  .sub{ font-size:1rem; color:var(--ink-dim); line-height:1.5; max-width:65ch; }
+
+  .bullets{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .bullets li{ display:flex; gap:12px; align-items:flex-start; font-size:1.02rem; line-height:1.5; color:var(--ink); }
+  .bullets li::before{ content:"—"; color:var(--orange); flex-shrink:0; }
+
+  .quote{
+    border-left:3px solid var(--orange);
+    padding:6px 0 6px 20px;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(1.1rem, 2.4vw, 1.6rem);
+    font-weight:500; line-height:1.4; color:var(--ink);
+  }
+
+  table.dtable{ border-collapse:collapse; width:100%; }
+  table.dtable th, table.dtable td{ text-align:left; padding:10px 14px; border-bottom:1px solid var(--blue-line); font-size:0.88rem; line-height:1.4; }
+  table.dtable th{ color:var(--orange); font-family:'Space Grotesk', sans-serif; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; }
+  table.dtable td{ color:var(--ink); }
+  table.dtable td.dim{ color:var(--ink-dim); }
+
+  .loop{ display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; }
+  .loop-box{ border:1.5px dashed var(--blue-line); background:var(--blue-card); border-radius:var(--radius); padding:18px 20px; text-align:center; min-width:140px; }
+  .loop-box .k{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.05rem; color:var(--orange); }
+  .loop-box .v{ font-size:0.78rem; color:var(--ink-dim); margin-top:6px; }
+  .loop-arrow{ font-size:1.5rem; color:var(--ink-dim); }
+
+  .sys-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:14px; }
+  .sys-card{ border:1.5px solid var(--blue-line); background:var(--blue-card); border-radius:var(--radius); padding:16px 18px; }
+  .sys-card.accent{ border-color:var(--orange-dim); }
+  .sys-card .k{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.0rem; margin-bottom:6px; }
+  .sys-card .v{ font-size:0.8rem; color:var(--ink-dim); line-height:1.45; }
+
+  .compare{ display:flex; gap:16px; flex-wrap:wrap; }
+  .compare-box{ flex:1; min-width:260px; border-radius:var(--radius); padding:20px; }
+  .compare-box.a{ background:var(--blue-mid); border:1.5px solid var(--blue-line); }
+  .compare-box.b{ background:var(--orange); }
+  .compare-box .k{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:8px; }
+  .compare-box.a .k{ color:var(--orange); }
+  .compare-box.b .k{ color:var(--blue-deep); }
+  .compare-box .v{ font-size:0.88rem; line-height:1.5; }
+  .compare-box.a .v{ color:var(--ink-dim); }
+  .compare-box.b .v{ color:var(--blue-deep); }
+  .compare-sub-label{ font-size:0.68rem; letter-spacing:0.08em; color:var(--orange-dim); text-transform:uppercase; margin-top:4px; }
+  .compare-mini-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:10px; margin-top:6px; }
+  .compare-mini{ border:1px solid var(--blue-line); border-radius:8px; padding:10px 12px; background:rgba(36,70,111,0.4); }
+  .compare-mini .k{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.82rem; color:var(--ink); }
+  .compare-mini .v{ font-size:0.72rem; color:var(--ink-dim); margin-top:3px; line-height:1.35; }
+
+  .navbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 22px;
+    border-top:1.5px solid var(--blue-line);
+    flex-shrink:0;
+  }
+  .nav-btn{
+    font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.85rem;
+    color:var(--blue-deep); background:var(--orange); border:none;
+    border-radius:999px; padding:10px 22px; cursor:pointer;
+  }
+  .nav-btn:disabled{ opacity:0.35; cursor:default; }
+  .nav-btn.ghost{ background:transparent; color:var(--ink-dim); border:1.5px solid var(--blue-line); }
+  .nav-btn:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .hint{ font-size:0.66rem; color:var(--ink-dim); }
+
+  .notes-drawer{
+    display:none; border-top:1.5px solid var(--orange-dim); background:rgba(196,83,26,0.08);
+    padding:12px 22px; font-size:0.8rem; color:var(--ink); line-height:1.5;
+    max-height:20vh; overflow-y:auto; flex-shrink:0;
+  }
+  .notes-drawer.show{ display:block; }
+  .notes-drawer .lbl{ color:var(--orange); font-weight:600; font-size:0.66rem; letter-spacing:0.08em; margin-bottom:4px; display:block; }
+
+  /* =======================================================
+     FLASHCARDS VIEW
+  ======================================================= */
+  .flash-wrap{ flex:1; overflow-y:auto; padding:22px 26px 30px; }
+  .fc-progress{ display:flex; align-items:center; gap:12px; font-size:0.75rem; color:var(--ink-dim); margin-bottom:18px; max-width:1100px; margin-left:auto; margin-right:auto; }
+  .fc-progress-bar{ flex:1; height:6px; border-radius:999px; background:var(--blue-line); overflow:hidden; }
+  .fc-progress-fill{ height:100%; width:0%; background:var(--orange); transition:width .25s ease; }
+  .card-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:16px; max-width:1100px; margin:0 auto; }
+  .card{ perspective:1000px; height:170px; }
+  .card-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.2,.8,.2,1); }
+  .card.flipped .card-inner{ transform:rotateY(180deg); }
+  .card-face{ position:absolute; inset:0; -webkit-backface-visibility:hidden; backface-visibility:hidden; border-radius:10px; border:1.5px dashed var(--blue-line); background:var(--blue-card); padding:16px; display:flex; flex-direction:column; cursor:pointer; }
+  .card-face:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+  .card-front{ justify-content:space-between; }
+  .card-front .no{ font-size:0.66rem; color:var(--ink-dim); letter-spacing:0.08em; }
+  .card-front .term{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.1rem; color:var(--ink); line-height:1.25; }
+  .card-front .hint2{ font-size:0.66rem; color:var(--orange-dim); letter-spacing:0.03em; }
+  .card-back{ transform:rotateY(180deg); background:var(--blue-mid); border-color:var(--orange-dim); justify-content:space-between; gap:8px; }
+  .card-back .def{ font-size:0.76rem; line-height:1.4; color:var(--ink); }
+  .card-back .note{ font-size:0.66rem; line-height:1.4; color:var(--ink-dim); border-top:1px dashed var(--blue-line); padding-top:8px; }
+  @media (prefers-reduced-motion: reduce){ .card-inner{ transition:none; } }
+
+  /* =======================================================
+     QUIZ VIEW
+  ======================================================= */
+  .quiz-outer{ flex:1; overflow-y:auto; padding:26px 26px 30px; }
+  .quiz-wrap{ max-width:600px; margin:0 auto; }
+  .quiz-q{ border:1.5px solid var(--blue-line); border-radius:var(--radius); background:var(--blue-card); padding:22px 20px; margin-bottom:18px; }
+  .quiz-q .label{ font-size:0.66rem; color:var(--orange); letter-spacing:0.08em; margin-bottom:10px; }
+  .quiz-q .def{ font-size:0.95rem; line-height:1.5; color:var(--ink); }
+  .quiz-options{ display:grid; gap:10px; }
+  .quiz-option{ font-family:'IBM Plex Mono', monospace; font-size:0.85rem; text-align:left; color:var(--ink); background:var(--blue-mid); border:1.5px solid var(--blue-line); border-radius:8px; padding:12px 14px; cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+  .quiz-option:hover{ border-color:var(--orange-dim); }
+  .quiz-option:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+  .quiz-option.correct{ border-color:var(--green); background:rgba(76,175,125,0.18); }
+  .quiz-option.wrong{ border-color:var(--red); background:rgba(226,86,79,0.18); }
+  .quiz-option:disabled{ cursor:default; }
+  .quiz-footer{ display:flex; justify-content:space-between; align-items:center; }
+  .quiz-score{ font-size:0.8rem; color:var(--ink-dim); }
+  .btn{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.85rem; color:var(--blue-deep); background:var(--orange); border:none; border-radius:999px; padding:10px 20px; cursor:pointer; }
+  .btn:disabled{ opacity:0.4; cursor:default; }
+  .btn:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .quiz-result{ text-align:center; padding:30px 20px; }
+  .quiz-result .big{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:2.2rem; color:var(--orange); }
+  .quiz-result p{ color:var(--ink-dim); font-size:0.85rem; }
+
+  @media (max-width:640px){
+    .stage{ padding:16px 20px; }
+    .headline{ font-size:1.4rem; }
+    .appbar{ padding:10px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="appbar">
+  <h2>What's Actually <span>Is A Robot?</span></h2>
+  <div class="app-modes">
+    <button class="app-mode-btn active" data-view="slidesView">Slides</button>
+    <button class="app-mode-btn" data-view="flashView">Flashcards</button>
+    <button class="app-mode-btn" data-view="quizAppView">Quiz</button>
+  </div>
+</div>
+
+<!-- ============ SLIDES VIEW ============ -->
+<div class="view active" id="slidesView">
+  <div class="topbar">
+    <span class="count" id="count">1 / 10</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <button class="notes-toggle" id="notesToggle">Facilitator Notes: Off</button>
+  </div>
+  <div class="stage" id="stage"></div>
+  <div class="notes-drawer" id="notesDrawer">
+    <span class="lbl">FACILITATOR NOTE</span>
+    <span id="notesText"></span>
+  </div>
+  <div class="navbar">
+    <button class="nav-btn ghost" id="prevBtn">← Prev</button>
+    <span class="hint">Arrow keys / Space to navigate · N for notes</span>
+    <button class="nav-btn" id="nextBtn">Next →</button>
+  </div>
+</div>
+
+<!-- ============ FLASHCARDS VIEW ============ -->
+<div class="view" id="flashView">
+  <div class="flash-wrap">
+    <div class="fc-progress">
+      <span id="fcProgressLabel">0 / 18 reviewed</span>
+      <div class="fc-progress-bar"><div class="fc-progress-fill" id="fcProgressFill"></div></div>
+    </div>
+    <div class="card-grid" id="cardGrid"></div>
+  </div>
+</div>
+
+<!-- ============ QUIZ VIEW ============ -->
+<div class="view" id="quizAppView">
+  <div class="quiz-outer">
+    <div class="quiz-wrap" id="quizWrap"></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   SHARED DATA
+========================================================= */
+const TERMS = [
+  {term:"Chassis", def:"The structural frame that everything else attaches to — think of it as the robot's skeleton.", note:"Built from U-channel, plates, and standoffs in your kit."},
+  {term:"U-Channel", def:"A drilled metal beam used to build the robot's frame. Comes in different lengths with holes for mounting things.", note:"The most common structural part in a goBILDA kit — you'll use dozens of them."},
+  {term:"DC Motor", def:"Spins continuously in one direction until you tell it to stop. Powers wheels and spinning mechanisms.", note:"Your kit's   motors are DC motors with a built-in gearbox."},
+  {term:"Servo", def:"Moves to an exact position and holds it — it doesn't spin forever like a DC motor.", note:"Great for claws or anything that needs to 'aim' and hold still."},
+  {term:"Gear", def:"A toothed wheel that transfers spinning motion — pairing different sizes changes speed or power.", note:"Small gear driving a big gear = more power, less speed."},
+  {term:"Sprocket & Chain", def:"Like a bicycle chain — moves spinning power between two points that are far apart.", note:"Common in linear slides and turret mechanisms."},
+  {term:"Bearing", def:"A smooth ring that lets a spinning shaft rotate with almost no friction.", note:"Without bearings, shafts grind against their mount and wear out fast."},
+  {term:"Shaft", def:"A rod that spins — wheels, gears, and sprockets all mount onto it.", note:"goBILDA shafts use a hex-shaped 'REX' profile so parts don't slip."},
+  {term:"Drivetrain", def:"The wheels and motors that make the whole robot move around the field.", note:"Usually the very first thing a new team builds."},
+  {term:"Intake", def:"A spinning mechanism that pulls game pieces into the robot.", note:"Usually rollers or wheels spun by a DC motor."},
+  {term:"Claw", def:"A gripping mechanism that opens and closes to grab game pieces.", note:"Usually driven by one or two servos."},
+  {term:"Linear Slide", def:"Extends part of the robot outward in a straight line, like a drawer sliding open.", note:"Used to reach up high or extend out to score."},
+  {term:"Arm", def:"Extends the robot's reach by rotating around a pivot point, like an elbow.", note:"Often has a claw or intake mounted at the end."},
+  {term:"Control Hub", def:"The robot's brain — runs your code and controls every motor and servo on board.", note:"An Android device built into a rugged case, mounted on the robot."},
+  {term:"Driver Hub", def:"The tablet the drive team holds to control the robot during a match.", note:"Talks to the Control Hub wirelessly."},
+  {term:"Expansion Hub", def:"An extra 'brain' you add when you need more motor, servo, or sensor connections than one hub allows.", note:"Wired to the Control Hub — think plug-in extension, not a second brain."},
+  {term:"Battery", def:"The robot's power source — a 12-volt battery that powers every motor, servo, and hub.", note:"Always bring a charged spare to build sessions and competitions."},
+  {term:"Gamepad", def:"The controller a driver holds — same idea as a video game controller.", note:"Plugs into the Driver Hub."},
+];
+
+const SLIDES = [
+  {
+    type:'title',
+    eyebrow:'Rookie Online Session',
+    headline:'What\'s Actually <span>Is A Robot?</span>',
+    sub:'Basics for Beginners in Robotics    •By ROBO-G•',
+    note:'Welcome everyone, quick vibe check that screens/audio are working, then dive in.'
+  },
+  {
+    type:'bullets',
+    eyebrow:'Part 1 · Define',
+    headline:'What Is Robotics?',
+    bullets:[
+      'Robotics is a combination of designing, building, and programming machines that sense, think, and act in the physical world',
+      'Mechanical engineering — the body',
+      'Electronics — the nerves',
+      'Programming — the mind'
+    ],
+    note:'Ask the group to first name a few robots (Roomba, self-driving car, Mars rover, factory arm) before giving the formal definition. Point out FTC is literally all three of these combined.'
+  },
+  {
+    type:'loop',
+    eyebrow:'Part 1 · The Pattern',
+    headline:'Sense → Think → Act',
+    quote:'Worked example — a Roomba: senses walls & drop-offs → thinks turn, keep going, or dock to recharge? → acts by driving its wheels.',
+    note:'Every robot runs this loop on repeat. This is the one "theory" diagram of the whole session — keep it short. Let the group guess the Roomba example before revealing.'
+  },
+  {
+    type:'sysgrid',
+    eyebrow:'Part 2 · From Robots To Our Robot',
+    headline:'Four Systems, Same Idea',
+    quote:'Every robot — a simple toy or the robots in Chandrayaan III — runs on some version of Sense, Think, Act, plus something to hold it together and power it. ',
+    cards:[
+      {k:'Structure — the skeleton', v:'Holds everything together.'},
+      {k:'Motion — the muscles', v:'Makes things move. (= Act)'},
+      {k:'Brain — the nervous system', v:'Runs the code, decides. (= Sense + Think)'},
+      {k:'Power', v:'Fuels all three systems.'}
+    ],
+    note:'Once they can name these four, they can look at ANY FTC robot and understand what they\'re looking at. Quick check: "if a robot\'s arm is broken, which system do you check first?"'
+  },
+  {
+    type:'sysgrid',
+    eyebrow:'Part 3 · Real Parts Tour',
+    headline:'Structure — Robot Lego, But Metal',
+    cards:[
+      {k:'U-Channel', v:'Drilled metal beams — the main building block.'},
+      {k:'Brackets', v:'Connect channel pieces at angles.'},
+      {k:'Standoffs', v:'Spacers that hold layers apart.'},
+      {k:'Grid Plates', v:'Flat panels with a full hole pattern.'}
+    ],
+    note:'Everything lines up on a hole pattern — that\'s the goBILDA system. Show real photos if you have the product page open.'
+  },
+  {
+    type:'compare',
+    eyebrow:'Part 3 · Real Parts Tour',
+    headline:'Motion — Motors Spin. Servos Hold.',
+    boxA:{k:'DC Motor', v:'Spins continuously in one direction until told to stop. Powers wheels and spinning mechanisms are key.'},
+    boxB:{k:'Servo', v:'Moves to one exact position and holds it — doesn\'t spin forever. Great for claws or anything that needs to "aim" and hold still.'},
+    minis:[
+      {k:'Gear', v:'Pairing sizes changes speed or power.'},
+      {k:'Sprocket & Chain', v:'Moves power between far-apart points.'},
+      {k:'Shaft', v:'The rod that spins; parts mount onto it.'},
+      {k:'Bearing', v:'Lets a shaft spin with near-zero friction.'}
+    ],
+    note:'Live moment: hold up (or show) the motor vs. the dual-mode servo and let them guess before revealing which is which.'
+  },
+  {
+    type:'sysgrid',
+    eyebrow:'Part 3 · Real Parts Tour',
+    headline:'Brains & Power',
+    cards:[
+      {k:'Control Hub', v:'The actual brain — runs your code, controls motors & servos.'},
+      {k:'Expansion Hub', v:'Extra hub for more connections — wired in, not standalone.'},
+      {k:'Driver Hub', v:'Tablet the drive team holds during a match.'},
+      {k:'Gamepad', v:'Plugs into the Driver Hub — like a game controller.'},
+      {k:'Battery', v:'12V power source for the whole robot.'}
+    ],
+    note:'Keep this conversational, narrate like a photo tour rather than a lecture. Pause for questions. Remind them to always bring a charged spare battery.'
+  },
+  {
+    type:'bullets',
+    eyebrow:'Part 4 · Make It Stick',
+    headline:'Flashcards + Quiz Time',
+    bullets:[
+      'Switch to the Flashcards tab above — flip through all 18 build terms together as a group',
+      'Switch to the Quiz tab — call out answers before the click, or take turns; track score for fun',
+      'By the end, students see every term twice — once tied to a real part, once as a standalone definition'
+    ],
+    note:'Switch tabs live during the session. Come back to the Slides tab for the wrap-up afterward.'
+  },
+  {
+    type:'table',
+    eyebrow:'Part 5 · Bonus',
+    headline:'A Few Words You\'ll Hear Immediately',
+    cols:['Term','Meaning'],
+    rows:[
+      ['Match','One round of gameplay, two alliances competing'],
+      ['Alliance','Your team + 1 partner team, working together'],
+      ['Pit','Team\'s home base at an event'],
+      ['Driver Station / Driver Hub','What the driver controls the robot from'],
+      ['Inspection','The safety/rules check every robot passes before competing']
+    ],
+    note:'Keep this light — a "you\'ll hear these a lot" moment, not a second quiz.'
+  },
+  {
+    type:'quote',
+    eyebrow:'Wrap-Up',
+    headline:'One Last Question',
+    quote:'Which of the four systems — Structure, Motion, Brains, Power — are you most curious to actually build?',
+    note:'Good temperature check for who to pair up with which sub-team later. Remind them the Flashcards + Quiz tabs are theirs to revisit, and preview the offline StarterBot build day next.'
+  }
+];
+
+/* =========================================================
+   APP MODE SWITCHING
+========================================================= */
+const modeBtns = document.querySelectorAll('.app-mode-btn');
+const views = document.querySelectorAll('.view');
+modeBtns.forEach(btn => btn.addEventListener('click', () => {
+  modeBtns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  views.forEach(v => v.classList.remove('active'));
+  document.getElementById(btn.dataset.view).classList.add('active');
+  if(btn.dataset.view === 'quizAppView' && !quizStarted){ startQuiz(); }
+}));
+
+/* =========================================================
+   SLIDES ENGINE
+========================================================= */
+let idx = 0;
+const stage = document.getElementById('stage');
+
+function renderSlide(s){
+  const wrap = document.createElement('div');
+  wrap.className = 'slide active';
+  let inner = `<div class="eyebrow">${s.eyebrow}</div><h1 class="headline">${s.headline}</h1>`;
+
+  if(s.type === 'title'){
+    inner += `<p class="sub">${s.sub}</p>`;
+  }
+  else if(s.type === 'bullets'){
+    inner += `<ul class="bullets">${s.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>`;
+  }
+  else if(s.type === 'quote'){
+    inner += `<div class="quote">${s.quote}</div>`;
+  }
+  else if(s.type === 'loop'){
+    inner += `<div class="loop">
+      <div class="loop-box"><div class="k">SENSE</div><div class="v">gather info about the world</div></div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-box"><div class="k">THINK</div><div class="v">decide what to do</div></div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-box"><div class="k">ACT</div><div class="v">do something physical</div></div>
+    </div>`;
+    if(s.quote){ inner += `<div class="quote" style="font-size:0.95rem;">${s.quote}</div>`; }
+  }
+  else if(s.type === 'table'){
+    inner += `<table class="dtable"><thead><tr>${s.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+      <tbody>${s.rows.map(r=>`<tr><td>${r[0]}</td><td class="dim">${r[1]}</td></tr>`).join('')}</tbody></table>`;
+  }
+  else if(s.type === 'sysgrid'){
+    if(s.quote){ inner += `<div class="quote" style="font-size:0.95rem;">${s.quote}</div>`; }
+    inner += `<div class="sys-grid">${s.cards.map(c=>`<div class="sys-card"><div class="k">${c.k}</div><div class="v">${c.v}</div></div>`).join('')}</div>`;
+  }
+  else if(s.type === 'compare'){
+    inner += `<div class="compare">
+      <div class="compare-box a"><div class="k">${s.boxA.k.toUpperCase()}</div><div class="v">${s.boxA.v}</div></div>
+      <div class="compare-box b"><div class="k">${s.boxB.k.toUpperCase()}</div><div class="v">${s.boxB.v}</div></div>
+    </div>
+    <div class="compare-sub-label">Supporting Parts — How Power Moves</div>
+    <div class="compare-mini-grid">${s.minis.map(m=>`<div class="compare-mini"><div class="k">${m.k}</div><div class="v">${m.v}</div></div>`).join('')}</div>`;
+  }
+
+  wrap.innerHTML = inner;
+  return wrap;
+}
+
+function renderSlideView(){
+  stage.innerHTML = '';
+  stage.appendChild(renderSlide(SLIDES[idx]));
+  document.getElementById('count').textContent = `${idx+1} / ${SLIDES.length}`;
+  document.getElementById('progressFill').style.width = `${(idx+1)/SLIDES.length*100}%`;
+  document.getElementById('notesText').textContent = SLIDES[idx].note || '';
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === SLIDES.length - 1;
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => { if(idx>0){ idx--; renderSlideView(); } });
+document.getElementById('nextBtn').addEventListener('click', () => { if(idx<SLIDES.length-1){ idx++; renderSlideView(); } });
+
+const notesToggle = document.getElementById('notesToggle');
+const notesDrawer = document.getElementById('notesDrawer');
+let notesOn = false;
+function toggleNotes(){
+  notesOn = !notesOn;
+  notesDrawer.classList.toggle('show', notesOn);
+  notesToggle.classList.toggle('active', notesOn);
+  notesToggle.textContent = `Facilitator Notes: ${notesOn ? 'On' : 'Off'}`;
+}
+notesToggle.addEventListener('click', toggleNotes);
+
+document.addEventListener('keydown', (e) => {
+  if(document.getElementById('slidesView').classList.contains('active')){
+    if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); if(idx<SLIDES.length-1){ idx++; renderSlideView(); } }
+    else if(e.key === 'ArrowLeft'){ if(idx>0){ idx--; renderSlideView(); } }
+    else if(e.key.toLowerCase() === 'n'){ toggleNotes(); }
+  }
+});
+
+renderSlideView();
+
+/* =========================================================
+   FLASHCARDS ENGINE
+========================================================= */
+const grid = document.getElementById('cardGrid');
+const flipped = new Set();
+
+TERMS.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="card-inner">
+      <button class="card-face card-front" aria-label="Reveal definition for ${item.term}">
+        <span class="no">${String(i+1).padStart(2,'0')} / ${TERMS.length}</span>
+        <span class="term">${item.term}</span>
+        <span class="hint2">tap to reveal →</span>
+      </button>
+      <button class="card-face card-back" aria-label="Hide definition for ${item.term}">
+        <span class="def">${item.def}</span>
+        <span class="note">${item.note}</span>
+      </button>
+    </div>`;
+  const btns = card.querySelectorAll('.card-face');
+  btns.forEach(b => b.addEventListener('click', () => {
+    card.classList.toggle('flipped');
+    if(!flipped.has(i)){ flipped.add(i); updateFcProgress(); }
+  }));
+  grid.appendChild(card);
+});
+
+function updateFcProgress(){
+  document.getElementById('fcProgressLabel').textContent = `${flipped.size} / ${TERMS.length} reviewed`;
+  document.getElementById('fcProgressFill').style.width = (flipped.size/TERMS.length*100) + '%';
+}
+
+/* =========================================================
+   QUIZ ENGINE
+========================================================= */
+const quizWrap = document.getElementById('quizWrap');
+let quizOrder = [], qIndex = 0, score = 0, answered = false, quizStarted = false;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function startQuiz(){
+  quizStarted = true;
+  quizOrder = shuffle(TERMS.map((_,i)=>i));
+  qIndex = 0; score = 0; answered = false;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  if(qIndex >= quizOrder.length){ renderResult(); return; }
+  answered = false;
+  const correctIdx = quizOrder[qIndex];
+  const correctItem = TERMS[correctIdx];
+  const wrongPool = TERMS.map((_,i)=>i).filter(i => i !== correctIdx);
+  const wrongs = shuffle(wrongPool).slice(0,3);
+  const options = shuffle([correctIdx, ...wrongs]);
+
+  quizWrap.innerHTML = `
+    <div class="quiz-q">
+      <div class="label">QUESTION ${qIndex+1} OF ${quizOrder.length} — WHICH TERM MATCHES?</div>
+      <div class="def">${correctItem.def}</div>
+    </div>
+    <div class="quiz-options" id="quizOptions">
+      ${options.map(i => `<button class="quiz-option" data-idx="${i}">${TERMS[i].term}</button>`).join('')}
+    </div>
+    <div class="quiz-footer" style="margin-top:18px;">
+      <span class="quiz-score">Score: ${score} / ${qIndex}</span>
+      <button class="btn" id="nextBtn2" disabled>Next →</button>
+    </div>`;
+
+  document.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(answered) return;
+      answered = true;
+      const optIdx = parseInt(btn.dataset.idx,10);
+      if(optIdx === correctIdx){ score++; btn.classList.add('correct'); }
+      else {
+        btn.classList.add('wrong');
+        document.querySelector(`.quiz-option[data-idx="${correctIdx}"]`).classList.add('correct');
+      }
+      document.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+      document.getElementById('nextBtn2').disabled = false;
+    });
+  });
+  document.getElementById('nextBtn2').addEventListener('click', () => { qIndex++; renderQuestion(); });
+}
+
+function renderResult(){
+  quizWrap.innerHTML = `
+    <div class="quiz-result">
+      <div class="big">${score} / ${quizOrder.length}</div>
+      <p>terms matched correctly</p>
+      <button class="btn" id="retryBtn">Try Again</button>
+    </div>`;
+  document.getElementById('retryBtn').addEventListener('click', startQuiz);
+}
+</script>
+
+</body>
+</html>
